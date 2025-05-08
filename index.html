@@ -1,17 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Distancia del Sensor</title>
-</head>
-<body>
-  <h1>Datos de distancia</h1>
-  <div id="distancia">Cargando...</div>
-
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+    // Importa módulos Firebase v9+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getDatabase, ref, query, limitToLast, onChildAdded } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBP9L1Yip1xoHqpld2tVYtpvhZebxYo2BY",
@@ -24,19 +20,30 @@
       measurementId: "G-GMNGNB85NQ"
     };
 
-    // Inicializar Firebase
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Referencia al nodo "distancia"
-    const distanciaRef = ref(db, "distancia");
+    // Referencia al nodo de distancia con query para el último dato
+    const distanciaQuery = query(ref(db, 'esp32/distancia'), limitToLast(1));
 
-    // Escuchar cambios en tiempo real
-    onValue(distanciaRef, (snapshot) => {
+    // Escucha el último hijo agregado (nuevo dato)
+    onChildAdded(distanciaQuery, (snapshot) => {
       const data = snapshot.val();
-      document.getElementById("distancia").innerText = "Distancia: " + data + " cm";
+      console.log("Dato recibido:", data);
+      if (data && data.distancia !== undefined) {
+        document.getElementById("distancia").innerText = "Distancia: " + data.distancia + " cm";
+      } else {
+        document.getElementById("distancia").innerText = "Dato no disponible";
+      }
+    }, (error) => {
+      console.error("Error al leer datos:", error);
     });
   </script>
+</head>
+<body>
+  <h1>Datos de distancia</h1>
+  <div id="distancia">Cargando...</div>
 </body>
 </html>
+
 
