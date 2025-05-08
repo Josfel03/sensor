@@ -3,11 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Distancia del Sensor</title>
+  <title>Sensor de distancia</title>
+
+  <!-- Firebase v9+ -->
   <script type="module">
-    // Importa módulos Firebase v9+
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getDatabase, ref, query, limitToLast, onChildAdded } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+    import {
+      getDatabase,
+      ref,
+      query,
+      orderByChild,
+      limitToLast,
+      onValue
+    } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBP9L1Yip1xoHqpld2tVYtpvhZebxYo2BY",
@@ -23,27 +31,79 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Referencia al nodo de distancia con query para el último dato
-    const distanciaQuery = query(ref(db, 'esp32/distancia'), limitToLast(1));
+    // Consultamos ordenando por timestamp y limitamos al último
+    const distanciaQuery = query(
+      ref(db, 'esp32/distancia'),
+      orderByChild('timestamp'),
+      limitToLast(1)
+    );
 
-    // Escucha el último hijo agregado (nuevo dato)
-    onChildAdded(distanciaQuery, (snapshot) => {
-      const data = snapshot.val();
-      console.log("Dato recibido:", data);
-      if (data && data.distancia !== undefined) {
-        document.getElementById("distancia").innerText = "Distancia: " + data.distancia + " cm";
+    // Usamos onValue para recibir siempre el dato más reciente
+    onValue(distanciaQuery, (snapshot) => {
+      let texto;
+      if (snapshot.exists()) {
+        // Firebase devuelve un snapshot con un único hijo
+        snapshot.forEach(childSnap => {
+          const data = childSnap.val();
+          texto = (data && data.distancia !== undefined)
+            ? `Distancia: ${data.distancia.toFixed(2)} cm`
+            : "Dato no disponible";
+        });
       } else {
-        document.getElementById("distancia").innerText = "Dato no disponible";
+        texto = "Sin datos aún";
       }
+      document.getElementById("distancia").innerText = texto;
     }, (error) => {
       console.error("Error al leer datos:", error);
+      document.getElementById("distancia").innerText = "Error al cargar";
     });
   </script>
+
+  <!-- Estilos minimalistas y vibrantes -->
+  <style>
+    /* Reset muy básico */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #f4f4f9;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(90deg, #ff6b6b, #f0e130, #1dd1a1);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-bottom: 1rem;
+    }
+
+    #distancia {
+      font-size: 1.8rem;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      background: #ffffff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      color: #333;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    #distancia:hover {
+      background: #fffae6;
+      transform: translateY(-2px);
+    }
+  </style>
 </head>
 <body>
-  <h1>Datos de distancia</h1>
+  <h1>Sensor de distancia</h1>
   <div id="distancia">Cargando...</div>
 </body>
 </html>
+
 
 
