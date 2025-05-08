@@ -5,59 +5,47 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sensor de distancia</title>
 
-  <!-- Firebase v9+ -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import {
-      getDatabase,
-      ref,
-      query,
-      orderByChild,
-      limitToLast,
-      onValue
-    } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+  import {
+    getDatabase,
+    ref,
+    query,
+    orderByChild,
+    limitToLast,
+    onValue
+  } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBP9L1Yip1xoHqpld2tVYtpvhZebxYo2BY",
-      authDomain: "dhtarduino-ee994.firebaseapp.com",
-      databaseURL: "https://dhtarduino-ee994-default-rtdb.firebaseio.com",
-      projectId: "dhtarduino-ee994",
-      storageBucket: "dhtarduino-ee994.appspot.com",
-      messagingSenderId: "376036182035",
-      appId: "1:376036182035:web:6c8359d81304b97a10d7e6",
-      measurementId: "G-GMNGNB85NQ"
-    };
+  const firebaseConfig = {
+    apiKey: "TU_API_KEY",
+    authDomain: "TU_AUTH_DOMAIN",
+    databaseURL: "TU_DATABASE_URL",
+    projectId: "TU_PROJECT_ID",
+    storageBucket: "TU_STORAGE_BUCKET",
+    messagingSenderId: "TU_MESSAGING_SENDER_ID",
+    appId: "TU_APP_ID"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
 
-    // Consultamos ordenando por timestamp y limitamos al último
-    const distanciaQuery = query(
-      ref(db, 'esp32/distancia'),
-      orderByChild('timestamp'),
-      limitToLast(1)
-    );
+  const distanciaQuery = query(
+    ref(db, 'esp32/distancia'),
+    orderByChild('timestamp'),
+    limitToLast(1)
+  );
 
-    // Usamos onValue para recibir siempre el dato más reciente
-    onValue(distanciaQuery, (snapshot) => {
-      let texto;
-      if (snapshot.exists()) {
-        // Firebase devuelve un snapshot con un único hijo
-        snapshot.forEach(childSnap => {
-          const data = childSnap.val();
-          texto = (data && data.distancia !== undefined)
-            ? `Distancia: ${data.distancia.toFixed(2)} cm`
-            : "Dato no disponible";
-        });
-      } else {
-        texto = "Sin datos aún";
+  onValue(distanciaQuery, (snapshot) => {
+    snapshot.forEach(child => {
+      const data = child.val();
+      if (data && data.distancia !== undefined) {
+        document.getElementById("distancia").innerText =
+          "Distancia: " + data.distancia.toFixed(2) + " cm";
       }
-      document.getElementById("distancia").innerText = texto;
-    }, (error) => {
-      console.error("Error al leer datos:", error);
-      document.getElementById("distancia").innerText = "Error al cargar";
     });
-  </script>
+  });
+</script>
+
 
   <!-- Estilos minimalistas y vibrantes -->
   <style>
