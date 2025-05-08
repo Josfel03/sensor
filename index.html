@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Distancia del Sensor</title>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+</head>
+<body>
+  <h1>Datos de distancia</h1>
+  <div id="distancia"></div>
+
+  <script>
+    // Configuración de Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyBP9L1Yip1xoHqpld2tVYtpvhZebxYo2BY",
+      authDomain: "dhtarduino-ee994.firebaseapp.com",
+      databaseURL: "https://dhtarduino-ee994-default-rtdb.firebaseio.com",
+      projectId: "dhtarduino-ee994",
+      storageBucket: "dhtarduino-ee994.firebasestorage.app",
+      messagingSenderId: "376036182035",
+      appId: "1:376036182035:web:6c8359d81304b97a10d7e6",
+      measurementId: "G-GMNGNB85NQ"
+    };
+
+    // Inicializar Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const database = firebase.database(app);
+
+    // Referencia al nodo 'distancia' en Firebase
+    const distanciaRef = database.ref('distancia');
+
+    // Escuchar cambios en la base de datos
+    distanciaRef.on('value', (snapshot) => {
+      const data = snapshot.val();
+      document.getElementById('distancia').innerText = "Distancia: " + data;
+    });
+  </script>
+</body>
+</html>
