@@ -1,41 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Distancia del Sensor</title>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
 </head>
 <body>
   <h1>Datos de distancia</h1>
-  <div id="distancia"></div>
+  <div id="distancia">Cargando...</div>
 
-  <script>
-    // Configuración de Firebase
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+
     const firebaseConfig = {
       apiKey: "AIzaSyBP9L1Yip1xoHqpld2tVYtpvhZebxYo2BY",
       authDomain: "dhtarduino-ee994.firebaseapp.com",
       databaseURL: "https://dhtarduino-ee994-default-rtdb.firebaseio.com",
       projectId: "dhtarduino-ee994",
-      storageBucket: "dhtarduino-ee994.firebasestorage.app",
+      storageBucket: "dhtarduino-ee994.appspot.com",
       messagingSenderId: "376036182035",
       appId: "1:376036182035:web:6c8359d81304b97a10d7e6",
       measurementId: "G-GMNGNB85NQ"
     };
 
     // Inicializar Firebase
-    const app = firebase.initializeApp(firebaseConfig);
-    const database = firebase.database(app);
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-    // Referencia al nodo 'distancia' en Firebase
-    const distanciaRef = database.ref('distancia');
+    // Referencia al nodo "distancia"
+    const distanciaRef = ref(db, "distancia");
 
-    // Escuchar cambios en la base de datos
-    distanciaRef.on('value', (snapshot) => {
+    // Escuchar cambios en tiempo real
+    onValue(distanciaRef, (snapshot) => {
       const data = snapshot.val();
-      document.getElementById('distancia').innerText = "Distancia: " + data;
+      document.getElementById("distancia").innerText = "Distancia: " + data + " cm";
     });
   </script>
 </body>
 </html>
+
