@@ -1,7 +1,44 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sensor de Distancia</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1de9b6, #1dc4e9);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    }
+
+    #distancia {
+      font-size: 2rem;
+      padding: 20px 40px;
+      background-color: rgba(255, 255, 255, 0.15);
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-radius: 20px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      transition: all 0.3s ease-in-out;
+    }
+
+    #distancia:hover {
+      transform: scale(1.05);
+      background-color: rgba(255, 255, 255, 0.25);
+    }
+  </style>
 </head>
 <body>
   <h1>Sensor de Distancia</h1>
@@ -19,13 +56,13 @@
     } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
     const firebaseConfig = {
-      apiKey: "TU_API_KEY",
-      authDomain: "TU_AUTH_DOMAIN",
+      apiKey: "AIzaSyBP9L1Yip1xoHqpld2tVYtpvhZebxYo2BY",
+      authDomain: "dhtarduino-ee994.firebaseapp.com",
       databaseURL: "https://dhtarduino-ee994-default-rtdb.firebaseio.com",
-      projectId: "TU_PROJECT_ID",
-      storageBucket: "TU_STORAGE_BUCKET",
-      messagingSenderId: "TU_MESSAGING_SENDER_ID",
-      appId: "TU_APP_ID"
+      projectId: "dhtarduino-ee994",
+      storageBucket: "dhtarduino-ee994.appspot.com",
+      messagingSenderId: "376036182035",
+      appId: "1:376036182035:web:6c8359d81304b97a10d7e6"
     };
 
     const app = initializeApp(firebaseConfig);
